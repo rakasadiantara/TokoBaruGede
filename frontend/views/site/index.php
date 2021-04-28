@@ -22,8 +22,18 @@ use yii\bootstrap\ActiveForm;
         <div class="container">
         <div class="well well-sm">
                 <div class="col-xs-10">
-                    <?php $form = ActiveForm::begin(['id' => 'login-form','layout' => 'horizontal']); ?>
-                    <?= $form->field(new \frontend\models\Item(),'category_id')->dropDownList(['1'=>'Kategori 1','2'=>'Kategori 2'],['prompt'=>'Select Category'])->label('Category') ?>
+                    <?php 
+                        $form = ActiveForm::begin([
+                            'id' => 'login-form',
+                            'layout' => 'horizontal',
+                            'method' => 'get',
+                            'action' => \yii\helpers\Url::to(['site/index'])]);
+                        $item_model = new \frontend\models\Item();
+                        //$item_model->category_id = \Yii::$app->request->get()['Item']['category_id'];
+                        //menandai kategori mana yang sedang dipilih
+
+                    ?>
+                    <?= $form->field($item_model,'category_id')->dropDownList(\yii\helpers\ArrayHelper::map(\frontend\models\ItemCategory::find()->all(), 'id', 'name'),['prompt'=>'Select Category'])->label('Category') ?>
                 </div>
                 <div>
                     <?= Html::submitButton('Filter', ['class' => 'btn btn-success', 'name' => 'filter-button']) ?>
@@ -32,7 +42,9 @@ use yii\bootstrap\ActiveForm;
             </div>
             
             <div class="row">
-                <?php foreach ($items as $item): ?>
+                <?php 
+                $items = $provider -> getModels();
+                foreach ($items as $item): ?>
                 <div class="item  col-xs-4 col-lg-4">
                     <div class="thumbnail">
                         <img class="group list-group-image" src="<?=$item->imagePre?>" alt="" style="min-height: 300px; max-height: 300px"/>
@@ -61,6 +73,8 @@ use yii\bootstrap\ActiveForm;
                 </div>
                 <?php endforeach;?>
             </div>
+            <?=\yii\widgets\LinkPager::widget(['pagination' => $provider->pagination]);?>
+
         </div>
 
     </div>

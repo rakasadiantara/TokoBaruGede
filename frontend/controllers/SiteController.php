@@ -15,6 +15,8 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use frontend\models\Item;
+use yii\data\ActiveDataProvider;
+
 
 /**
  * Site controller
@@ -75,9 +77,31 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $items = Item::find()->with('category')->all();
+        $model = Item::find()->with('category');
+
+        if(isset($_GET['Item']))
+        {
+            $search_args = \Yii::$app->request->get()['Item'];
+            $model->andFilterWhere([
+                'category_id' => $search_args['category_id']
+            ]);
+        }
+
+        $provider = new ActiveDataProvider([
+            'query' => $model,
+            'pagination' => [
+                'pageSize' => 6,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_ASC,
+                    'name' => SORT_ASC,
+                ]
+            ],
+        ]);
+
         return $this->render('index', [
-            'items' => $items
+            'provider' => $provider
         ]);
     }
 

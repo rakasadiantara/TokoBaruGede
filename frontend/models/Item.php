@@ -85,7 +85,7 @@ class Item extends \yii\db\ActiveRecord
         if(!$pic = $this->picture){
             $pic = 'uploads/no_pic.jpg'; 
         }
-        return Yii::$app->request->hostInfo.'/mymart/frontend/web/'.$pic;
+        return Yii::$app->request->hostInfo.'/TokoBaruGede/frontend/web/'.$pic;
     }
 
     
